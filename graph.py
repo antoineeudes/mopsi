@@ -2,6 +2,17 @@ import random
 from matplotlib import pyplot as plt
 import numpy as np
 
+class Vertex:
+    def __init__(self, x, y):
+        self._x = x
+        self._y = y
+    @property
+    def x(self):
+        return self._x
+    @property
+    def y(self):
+        return self._y
+
 class Graph:
     def __init__(self, nb_vertex, width=1, height=1):
         self._nb_vertex = nb_vertex
@@ -10,7 +21,9 @@ class Graph:
         self._vertex = dict()
 
         for id in range(nb_vertex):
-            self._vertex[id] = (random.random()*width, random.random()*height)
+            x = random.random()*width
+            y = random.random()*height
+            self._vertex[id] = Vertex(x, y)
 
     @property
     def width(self):
@@ -33,10 +46,23 @@ class Graph:
         Y = np.zeros(self.nb_vertex)
 
         for id in range(self.nb_vertex):
-            X[id] = self[id][0]
-            Y[id] = self[id][1]
+            X[id] = self[id].x
+            Y[id] = self[id].y
         plt.scatter(X, Y)
         plt.show()
+
+
+class Solution:
+    def __init__(self, list_of_vertex):
+        self.vertex = list_of_vertex
+
+    def disturb(self):
+        nb_vertex = len(self.vertex)
+        id1 = random.randint(nb_vertex)
+        id2 = random.randint(nb_vertex)
+        self.vertex[id1], self.vertex[id2] = self.vertex[id2], self.vertex[id1]
+
+
 
 if __name__ == '__main__':
     g = Graph(100)
