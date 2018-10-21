@@ -54,18 +54,24 @@ class Graph:
 
 
 class Solution:
-    def __init__(self, list_of_vertex):
-        self.vertex = list_of_vertex
+    def __init__(self, grid):
+        self.vertex = []
+        for i in range(grid.nb_vertex):
+            self.vertex.append(grid[i])
 
     def __getitem__(self, key):
         id = key
         return self.vertex[id]
 
-    def disturb(self):
+    def disturb(self, grid):
         nb_vertex = len(self.vertex)
+        s2 = Solution(grid)
+        for i in range(nb_vertex):
+            s2.vertex[i] = self[i]
         id1 = random.randint(0, nb_vertex-1)
         id2 = random.randint(0, nb_vertex-1)
-        self.vertex[id1], self.vertex[id2] = self[id2], self[id1]
+        s2.vertex[id1], s2.vertex[id2] = self[id2], self[id1]
+        return s2
 
 
     def cost(self):
@@ -86,13 +92,11 @@ if __name__ == '__main__':
     list_of_vertex = []
     for i in range(g.nb_vertex):
         list_of_vertex.append(g[i])
-    sol = Solution(list_of_vertex)
+    sol = Solution(g)
     print(sol.cost())
-    sol.disturb()
-    print(sol.cost())
-    sol.disturb()
-    print(sol.cost())
-    sol.disturb()
-    print(sol.cost())
-    sol.disturb()
-    print(sol.cost())
+    sol2 = sol.disturb(g)
+    print(sol2.cost())
+    sol3 = sol2.disturb(g)
+    print(sol3.cost())
+    sol4 = sol3.disturb(g)
+    print(sol4.cost())
