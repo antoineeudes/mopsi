@@ -63,9 +63,9 @@ class Solution:
 
     def disturb(self):
         nb_vertex = len(self.vertex)
-        id1 = random.randint(nb_vertex)
-        id2 = random.randint(nb_vertex)
-        self[id1], self[id2] = self[id2], self[id1]
+        id1 = random.randint(0, nb_vertex-1)
+        id2 = random.randint(0, nb_vertex-1)
+        self.vertex[id1], self.vertex[id2] = self[id2], self[id1]
 
 
     def cost(self):
@@ -82,9 +82,17 @@ class Solution:
 
 if __name__ == '__main__':
     g = Graph(100)
-    g.display()
+    #g.display()
     list_of_vertex = []
     for i in range(g.nb_vertex):
         list_of_vertex.append(g[i])
     sol = Solution(list_of_vertex)
+    print(sol.cost())
+    sol.disturb()
+    print(sol.cost())
+    sol.disturb()
+    print(sol.cost())
+    sol.disturb()
+    print(sol.cost())
+    sol.disturb()
     print(sol.cost())
