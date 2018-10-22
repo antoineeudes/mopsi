@@ -7,6 +7,8 @@ class Vertex:
     def __init__(self, x, y):
         self._x = x
         self._y = y
+    def __str__(self):
+        return '<{}, {}>'.format(self._x, self._y)
     @property
     def x(self):
         return self._x
@@ -54,23 +56,27 @@ class Graph:
 
 
 class Solution:
-    def __init__(self, grid):
-        self.vertex = []
-        for i in range(grid.nb_vertex):
-            self.vertex.append(grid[i])
+    def __init__(self, list_of_vertex):
+        self.vertex = list_of_vertex
 
     def __getitem__(self, key):
         id = key
         return self.vertex[id]
+    def __str__(self):
+        string = ''
+        for vertex in self.vertex:
+            string += vertex.__str__() + '\n'
+        return string
 
     def disturb(self, grid):
         nb_vertex = len(self.vertex)
-        s2 = Solution(grid)
+        list_of_vertex = []
         for i in range(nb_vertex):
-            s2.vertex[i] = self[i]
+            list_of_vertex.append(self[i])
         id1 = random.randint(0, nb_vertex-1)
         id2 = random.randint(0, nb_vertex-1)
-        s2.vertex[id1], s2.vertex[id2] = self[id2], self[id1]
+        list_of_vertex[id1], list_of_vertex[id2] = self[id2], self[id1]
+        s2 = Solution(list_of_vertex)
         return s2
 
 
@@ -88,11 +94,14 @@ class Solution:
 
 if __name__ == '__main__':
     g = Graph(100)
+    V = Vertex(2, 4)
+    print(V)
     #g.display()
     list_of_vertex = []
     for i in range(g.nb_vertex):
         list_of_vertex.append(g[i])
-    sol = Solution(g)
+    sol = Solution(list_of_vertex)
+    print(sol)
     print(sol.cost())
     sol2 = sol.disturb(g)
     print(sol2.cost())
