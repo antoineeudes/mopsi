@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     solutions = []
     costs = []
-    for i in range(1000):
+    for i in range(100):
         cost, first_solution = S.compute(g, first_solution.vertex)
         costs.append(cost)
         solutions.append(first_solution)
