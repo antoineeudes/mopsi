@@ -16,6 +16,9 @@ class Vertex:
     def y(self):
         return self._y
 
+    def dist(self, other):
+        return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
+
 class Graph:
     def __init__(self, nb_vertex, width=1, height=1):
         self._nb_vertex = nb_vertex
@@ -37,6 +40,7 @@ class Graph:
     @property
     def height(self):
         return self._height
+
     def __getitem__(self, key):
         idx = key
         if idx in self._vertex:
@@ -61,6 +65,8 @@ class Solution:
 
     def __getitem__(self, key):
         id = key
+        if(key == len(self.vertex)):
+            return self.vertex[0]
         return self.vertex[id]
     def __str__(self):
         string = ''
@@ -68,7 +74,7 @@ class Solution:
             string += vertex.__str__() + '\n'
         return string
 
-    def disturb(self, grid):
+    def disturb(self):
         nb_vertex = len(self.vertex)
         list_of_vertex = []
         for i in range(nb_vertex):
@@ -76,6 +82,31 @@ class Solution:
         id1 = random.randint(0, nb_vertex-1)
         id2 = random.randint(0, nb_vertex-1)
         list_of_vertex[id1], list_of_vertex[id2] = self[id2], self[id1]
+        s2 = Solution(list_of_vertex)
+        return s2
+
+    def get_most_distant_vertices_id(self):
+        max_dist = -1
+        i_max = None
+        for i in range(1, len(self.vertex)):
+            new_dist = self[i].dist(self[i+1])
+            if new_dist > max_dist:
+                max_dist = new_dist
+                i_max = i
+        return i_max
+
+    def disturb2(self):
+        nb_vertex = len(self.vertex)
+        list_of_vertex = []
+        for i in range(nb_vertex):
+            list_of_vertex.append(self[i])
+        id1 = random.randint(0, nb_vertex-1)
+        id2 = random.randint(0, nb_vertex-1)
+        i_max = self.get_most_distant_vertices_id()
+        # if(i_max != None):
+        list_of_vertex[i_max], list_of_vertex[id1] = self[id1], self[i_max]
+        # else:
+            # list_of_vertex[id1], list_of_vertex[id2] = self[id2], self[id1]
         s2 = Solution(list_of_vertex)
         return s2
 
