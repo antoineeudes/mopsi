@@ -67,7 +67,6 @@ def disturb_reverse(sol):
 
 
 
-
 class SimulatedAnnealing:
     def __init__(self, alpha, T, grid, disturb_function):
         self._temperature = T
@@ -140,18 +139,17 @@ if __name__ == '__main__':
     plt.plot(X, Y)
     g.display()
 
-    for i in range(50000):
+    for i in range(500000):
         solution = S.compute()
-        print(min_solution.cost())
+        print("{} {}".format(min_solution.cost(), i))
         if(solution.cost() < min_solution.cost()):
             min_solution = solution
 
-
-    print(str(min_solution.cost()) + '\n')
-    # print(min_solution)
     X = []
     Y = []
-    print(graph.nb_dist)
+
+    print("Cout final réel : {}".format(graph.real_cost(min_solution)))
+    print("Calculs de distances : {}".format(graph.nb_dist))
     for vertex in min_solution:
         X.append(vertex.x)
         Y.append(vertex.y)

@@ -6,6 +6,13 @@ from math import exp
 
 nb_dist = 0
 
+
+def real_cost(sol):
+    s = 0
+    for i in range(sol.len):
+        s += sol.dist(i,i+1)
+    return s
+
 class Vertex:
     def __init__(self, x, y):
         self._x = x
@@ -177,17 +184,17 @@ class Solution:
             raise IndexError("Indice en dehors des bornes")
 
         i, j = min(i,j), max(i,j)
+        if i == 0 and j == self.len-1:
+            return None # Formule du cout non valide dans ce cas la
         if j-i > self.len-(j-i):
             i, j = j+1, i+self.len-1
-            # print("fait le tour")
 
         i0, j0 = i%self.len, j%self.len
-        new_cost = self._current_cost-self.dist(i0,i0-1)-self.dist(j0,j0+1)+self.dist(i0-1,j0)+self.dist(j0+1,i0)
+        new_cost = self._current_cost-(self.dist(i0,i0-1)+self.dist(j0,j0+1)-self.dist(i0-1,j0)-self.dist(j0+1,i0))
 
         for k in range((j+1-i)//2):
             i1, i2 = (i+k)%self.len, (j-k)%self.len
             self._path_index[i1], self._path_index[i2] = self._path_index[i2], self._path_index[i1]
-
 
         self.set_cost(new_cost)
 
@@ -200,11 +207,10 @@ class Solution:
     def cost(self):
 
         if self._is_cost_actualized:
-            # print("{} {}".format(s, self._current_cost))
+            # print("{}".format(real_cost(self)-self._current_cost))
             return self._current_cost
 
         print("calcul complet")
-        # raise IndexError("chibre")
 
         s = 0
         for i in range(len(self.vertex)):
