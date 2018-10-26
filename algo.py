@@ -1,4 +1,6 @@
-from graph import *
+import graph
+import random
+from graph import Solution
 from math import exp
 from math import log
 from matplotlib import pyplot as plt
@@ -125,12 +127,12 @@ class SimulatedAnnealing:
         return self.min_solution
 
 if __name__ == '__main__':
-    g = Graph(100)
-    S = SimulatedAnnealing(0.5, 100, g, disturb_reverse)
-    min_solution = S.compute2()
+    g = graph.Graph(100)
+    S = SimulatedAnnealing(0.8, 100, g, disturb_reverse)
+    min_solution = S.compute()
 
     for i in range(50000):
-        solution = S.compute2()
+        solution = S.compute()
         print(min_solution.cost())
         if(solution.cost() < min_solution.cost()):
             min_solution = solution
@@ -140,6 +142,7 @@ if __name__ == '__main__':
     # print(min_solution)
     X = []
     Y = []
+    print(graph.nb_dist)
     for vertex in min_solution:
         X.append(vertex.x)
         Y.append(vertex.y)

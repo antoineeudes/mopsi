@@ -4,6 +4,8 @@ import numpy as np
 from math import sqrt
 from math import exp
 
+nb_dist = 0
+
 class Vertex:
     def __init__(self, x, y):
         self._x = x
@@ -22,6 +24,9 @@ class Vertex:
 
 
     def dist(self, other):
+        global nb_dist
+        nb_dist = nb_dist + 1
+        # print(nb_dist)
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
 class Graph:
@@ -36,16 +41,18 @@ class Graph:
             y = random.random()*height
             self._vertex.append(Vertex(x, y))
 
-        self.relative_dist = []
+        self._is_cost_actualized = False
 
-        for i in range(nb_vertex):
-            temp = []
-            for j in range(nb_vertex):
-                temp.append(j)
-            # self[i].dist(self[j])
-            temp.sort(key=(lambda j, i0=i, vertex=self._vertex:vertex[i0].dist(vertex[j])))
-            self.relative_dist.append(temp)
-            # print(self._vertex[i].dist(self._vertex[temp[1]]))
+        # self.relative_dist = []
+        #
+        # for i in range(nb_vertex):
+        #     temp = []
+        #     for j in range(nb_vertex):
+        #         temp.append(j)
+        #     # self[i].dist(self[j])
+        #     temp.sort(key=(lambda j, i0=i, vertex=self._vertex:vertex[i0].dist(vertex[j])))
+        #     self.relative_dist.append(temp)
+        #     # print(self._vertex[i].dist(self._vertex[temp[1]]))
 
     @property
     def width(self):
@@ -80,16 +87,23 @@ class Graph:
 
 
 class Solution:
-    def __init__(self, graph, path_index = None):
+    def __init__(self, graph, path_index = None, cost = None):
         # La liste de vertex n'est jamais modifiée
         self.graph = graph
         self.vertex = self.graph._vertex
         self.len = len(self.vertex)
 
-        self.path_index = path_index
+        self._path_index = path_index
         if path_index == None:
-            self.path_index = list(range(self.len))
-            # self.path_index[self.len-1] = 0
+            self._path_index = list(range(self.len))
+
+
+        if cost != None:
+            self._current_cost = cost
+            self._is_cost_actualized = True
+        else:
+            self._is_cost_actualized = False
+            self._current_cost = self.cost()
 
 
     def __getitem__(self, key):
@@ -97,20 +111,23 @@ class Solution:
         #     raise IndexError()
 
         if(key == self.len):
-            return self.vertex[self.path_index[0]]
-        return self.vertex[self.path_index[key]]
+            return self.vertex[self._path_index[0]]
+        if(key == -1):
+            return self.vertex[self._path_index[-1]]
+        return self.vertex[self._path_index[key]]
 
     def __setitem__(self, key, val):
         self.vertex[key] = val
 
     def __str__(self):
         string = ''
-        for id in self.path_index:
+        for id in self._path_index:
             string += self.vertex[id].__str__() + '\n'
         return string
 
     def __copy__(self):
-        return Solution(self.graph, self.path_index[:])
+        
+        return Solution(self.graph, self._path_index[:], self._current_cost if self._is_cost_actualized else None)
 
     def get_most_distant_vertices_id(self):
         max_dist = -1
@@ -122,8 +139,17 @@ class Solution:
                 i_max = i
         return i_max
 
+    def set_path_index(self, key, val):
+        self._is_cost_actualized = False
+        self._path_index[key] = val
+
+    def set_cost(self, cost):
+        self._current_cost = cost
+        self._is_cost_actualized = True
+
     def swap(self, i, j):
-        self.path_index[i], self.path_index[j] = self.path_index[j], self.path_index[i]
+        self._is_cost_actualized = False
+        self._path_index[i], self._path_index[j] = self._path_index[j], self._path_index[i]
         # self[i], self[j] = self[j], self[i]
 
     def reverse(self, i, j):
@@ -134,10 +160,14 @@ class Solution:
         if j-i > self.len-(j-i):
             i, j = j+1, i+self.len-1
 
+        i, j = i%self.len, j%self.len
+        new_cost = self._current_cost-self[i].dist(self[i-1])-self[j].dist(self[j+1])+self[i-1].dist(self[j])+self[j+1].dist(self[i])
         for k in range((j+1-i)//2):
             i1, i2 = (i+k)%self.len, (j-k)%self.len
-            self.path_index[i1], self.path_index[i2] = self.path_index[i2], self.path_index[i1]
+            self._path_index[i1], self._path_index[i2] = self._path_index[i2], self._path_index[i1]
 
+
+        self.set_cost(new_cost)
 
     def get_edges_dist(self):
         Dist = []
@@ -146,9 +176,20 @@ class Solution:
         return Dist
 
     def cost(self):
+
+
+        if self._is_cost_actualized:
+            # print("{} {}".format(s, self._current_cost))
+            return self._current_cost
+
+
         s = 0
         for i in range(len(self.vertex)):
             s += self[i].dist(self[i+1])
+
+
+        self._current_cost = s
+        self._is_cost_actualized = True
         return s
 
     def randomize_solution(self, grid):
