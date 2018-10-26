@@ -41,6 +41,17 @@ class Graph:
             y = random.random()*height
             self._vertex.append(Vertex(x, y))
 
+        self._distances = dict()
+
+        for i in range(nb_vertex):
+            for j in range(i):
+                self._distances[i, j] = self._vertex[i].dist(self._vertex[j])
+
+        # for j in range(nb_vertex):
+        #     self._distances[nb_vertex, j] = self._vertex[0].dist(self._vertex[j])
+
+
+        # print(self._distances)
         # self.relative_dist = []
         #
         # for i in range(nb_vertex):
@@ -68,6 +79,14 @@ class Graph:
         return self._vertex[key]
         # else:
         #     raise ValueError("vertex does not exist")
+
+    def dist(self, i, j):
+        if i > j:
+            return self._distances[i,j]
+        elif i < j:
+            return self._distances[j,i]
+        else:
+            return 0
 
     def display(self):
         X = np.zeros(self.nb_vertex)
@@ -137,6 +156,9 @@ class Solution:
                 i_max = i
         return i_max
 
+    def dist(self, i, j):
+        return self.graph.dist(self._path_index[i%self.len], self._path_index[j%self.len])
+
     def set_path_index(self, key, val):
         self._is_cost_actualized = False
         self._path_index[key] = val
@@ -160,7 +182,7 @@ class Solution:
             # print("fait le tour")
 
         i0, j0 = i%self.len, j%self.len
-        new_cost = self._current_cost-self[i0].dist(self[i0-1])-self[j0].dist(self[j0+1])+self[i0-1].dist(self[j0])+self[j0+1].dist(self[i0])
+        new_cost = self._current_cost-self.dist(i0,i0-1)-self.dist(j0,j0+1)+self.dist(i0-1,j0)+self.dist(j0+1,i0)
 
         for k in range((j+1-i)//2):
             i1, i2 = (i+k)%self.len, (j-k)%self.len
@@ -172,7 +194,7 @@ class Solution:
     def get_edges_dist(self):
         Dist = []
         for i in range(self.len):
-            Dist.append(self[i].dist(self[i+1]))
+            Dist.append(self.dist(i,i+1))
         return Dist
 
     def cost(self):
@@ -186,7 +208,7 @@ class Solution:
 
         s = 0
         for i in range(len(self.vertex)):
-            s += self[i].dist(self[i+1])
+            s += self.dist(i,i+1)
 
         self._current_cost = s
         self._is_cost_actualized = True
