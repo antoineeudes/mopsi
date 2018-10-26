@@ -127,7 +127,7 @@ class SimulatedAnnealing:
 
 if __name__ == '__main__':
     g = graph.Graph(500)
-    S = SimulatedAnnealing(0.5, 100, g, disturb_reverse)
+    S = SimulatedAnnealing(0.99, 1500, g, disturb_reverse)
     min_solution = S.compute()
 
     X = []

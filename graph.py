@@ -226,7 +226,7 @@ class Solution:
 
 
 if __name__ == '__main__':
-    g = Graph(100)
+    g = Graph(1000)
     V = Vertex(2, 4)
     print(V)
     #g.display()
