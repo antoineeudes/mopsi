@@ -98,34 +98,8 @@ class SimulatedAnnealing:
     def __getitem__(self, key):
         return self.solutions[key]
 
-    def compute(self, grid, previous_solution):
 
-        T = self.temperature
-        first_solution = Solution(previous_solution)
-        self.solutions.append(first_solution)
-        self.costs.append(first_solution.cost())
-        i = 0
-        while T>1:
-            new_solution = self[i-1].disturb(grid)
-            new_cost = new_solution.cost()
-            if new_cost < self.costs[i-1]:
-                print("Good Permutation", new_cost)
-                self.solutions.append(new_solution)
-                self.costs.append(new_cost)
-            else:
-                p = random.random()
-                if p < exp(-(new_cost-self.costs[i-1])/T):
-                    self.solutions.append(new_solution)
-                    self.costs.append(new_cost)
-                else:
-                    self.solutions.append(self[i-1])
-                    self.costs[i] = self.costs[i-1]
-            T = self.alpha*T
-            i += 1
-        ind_min, min = indice_min(self.costs)
-        return (min, self[ind_min])
-
-    def compute2(self, start_solution = None):
+    def compute(self, start_solution = None):
 
         if(start_solution != None):
             self.min_solution = start_solution
