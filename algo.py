@@ -127,8 +127,8 @@ class SimulatedAnnealing:
         return self.min_solution
 
 if __name__ == '__main__':
-    g = graph.Graph(100)
-    S = SimulatedAnnealing(0.8, 100, g, disturb_reverse)
+    g = graph.Graph(500)
+    S = SimulatedAnnealing(0.99, 1500, g, disturb_reverse)
     min_solution = S.compute()
 
     X = []
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     plt.plot(X, Y)
     g.display()
 
-    for i in range(10000):
+    for i in range(50000):
         solution = S.compute()
         print(min_solution.cost())
         if(solution.cost() < min_solution.cost()):
