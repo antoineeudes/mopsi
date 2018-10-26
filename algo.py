@@ -131,7 +131,16 @@ if __name__ == '__main__':
     S = SimulatedAnnealing(0.8, 100, g, disturb_reverse)
     min_solution = S.compute()
 
-    for i in range(50000):
+    X = []
+    Y = []
+    print(graph.nb_dist)
+    for vertex in min_solution:
+        X.append(vertex.x)
+        Y.append(vertex.y)
+    plt.plot(X, Y)
+    g.display()
+
+    for i in range(10000):
         solution = S.compute()
         print(min_solution.cost())
         if(solution.cost() < min_solution.cost()):
