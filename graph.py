@@ -2,6 +2,7 @@ import random
 from matplotlib import pyplot as plt
 import numpy as np
 from math import sqrt
+from math import exp
 
 class Vertex:
     def __init__(self, x, y):
@@ -15,6 +16,10 @@ class Vertex:
     @property
     def y(self):
         return self._y
+    @property
+    def next_vertex(self):
+        return self._next_vertex
+
 
     def dist(self, other):
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
@@ -24,12 +29,23 @@ class Graph:
         self._nb_vertex = nb_vertex
         self._width = width
         self._height = height
-        self._vertex = dict()
+        self._vertex = list()
 
         for id in range(nb_vertex):
             x = random.random()*width
             y = random.random()*height
-            self._vertex[id] = Vertex(x, y)
+            self._vertex.append(Vertex(x, y))
+
+        self.relative_dist = []
+
+        for i in range(nb_vertex):
+            temp = []
+            for j in range(nb_vertex):
+                temp.append(j)
+            # self[i].dist(self[j])
+            temp.sort(key=(lambda j, i0=i, vertex=self._vertex:vertex[i0].dist(vertex[j])))
+            self.relative_dist.append(temp)
+            # print(self._vertex[i].dist(self._vertex[temp[1]]))
 
     @property
     def width(self):
@@ -42,11 +58,11 @@ class Graph:
         return self._height
 
     def __getitem__(self, key):
-        idx = key
-        if idx in self._vertex:
-            return self._vertex[idx]
-        else:
-            raise ValueError("vertex does not exist")
+        # idx = key
+        # if idx in self._vertex:
+        return self._vertex[key]
+        # else:
+        #     raise ValueError("vertex does not exist")
 
     def display(self):
         X = np.zeros(self.nb_vertex)
@@ -58,64 +74,81 @@ class Graph:
         plt.scatter(X, Y)
         plt.show()
 
+    def get_nearest_vertex(id_vertex):
+        pass
+
+
 
 class Solution:
-    def __init__(self, list_of_vertex):
-        self.vertex = list_of_vertex
+    def __init__(self, graph, path_index = None):
+        # La liste de vertex n'est jamais modifiée
+        self.graph = graph
+        self.vertex = self.graph._vertex
+        self.len = len(self.vertex)
+
+        self.path_index = path_index
+        if path_index == None:
+            self.path_index = list(range(self.len))
+            # self.path_index[self.len-1] = 0
+
 
     def __getitem__(self, key):
-        id = key
-        if(key == len(self.vertex)):
-            return self.vertex[0]
-        return self.vertex[id]
+        # if(key > self.len):
+        #     raise IndexError()
+
+        if(key == self.len):
+            return self.vertex[self.path_index[0]]
+        return self.vertex[self.path_index[key]]
+
+    def __setitem__(self, key, val):
+        self.vertex[key] = val
+
     def __str__(self):
         string = ''
-        for vertex in self.vertex:
-            string += vertex.__str__() + '\n'
+        for id in self.path_index:
+            string += self.vertex[id].__str__() + '\n'
         return string
 
-    def disturb(self):
-        nb_vertex = len(self.vertex)
-        list_of_vertex = []
-        for i in range(nb_vertex):
-            list_of_vertex.append(self[i])
-        id1 = random.randint(0, nb_vertex-1)
-        id2 = random.randint(0, nb_vertex-1)
-        list_of_vertex[id1], list_of_vertex[id2] = self[id2], self[id1]
-        s2 = Solution(list_of_vertex)
-        return s2
+    def __copy__(self):
+        return Solution(self.graph, self.path_index[:])
 
     def get_most_distant_vertices_id(self):
         max_dist = -1
         i_max = None
-        for i in range(1, len(self.vertex)):
+        for i in range(1, self.len):
             new_dist = self[i].dist(self[i+1])
             if new_dist > max_dist:
                 max_dist = new_dist
                 i_max = i
         return i_max
 
-    def disturb2(self):
-        nb_vertex = len(self.vertex)
-        list_of_vertex = []
-        for i in range(nb_vertex):
-            list_of_vertex.append(self[i])
-        id1 = random.randint(0, nb_vertex-1)
-        id2 = random.randint(0, nb_vertex-1)
-        i_max = self.get_most_distant_vertices_id()
-        # if(i_max != None):
-        list_of_vertex[i_max], list_of_vertex[id1] = self[id1], self[i_max]
-        # else:
-            # list_of_vertex[id1], list_of_vertex[id2] = self[id2], self[id1]
-        s2 = Solution(list_of_vertex)
-        return s2
+    def swap(self, i, j):
+        self.path_index[i], self.path_index[j] = self.path_index[j], self.path_index[i]
+        # self[i], self[j] = self[j], self[i]
 
+    def reverse(self, i, j):
+        if i>self.len or j>self.len or i<-1 or j<-1:
+            raise IndexError("Indice en dehors des bornes")
+
+        i, j = min(i,j), max(i,j)
+        if j-i > self.len-(j-i):
+            i, j = j+1, i+self.len-1
+
+        for k in range((j+1-i)//2):
+            i1, i2 = (i+k)%self.len, (j-k)%self.len
+            self.path_index[i1], self.path_index[i2] = self.path_index[i2], self.path_index[i1]
+
+
+    def get_edges_dist(self):
+        Dist = []
+        for i in range(self.len):
+            Dist.append(self[i].dist(self[i+1]))
+        return Dist
 
     def cost(self):
         s = 0
-        for i in range(len(self.vertex)-1):
-            s += sqrt((self[i+1].x - self[i].x)**2 + (self[i+1].y - self[i].y)**2)
-        s += sqrt((self[-1].x - self[0].x)**2 + (self[-1].y - self[0].y)**2)
+        for i in range(len(self.vertex)):
+            s += self[i].dist(self[i+1])
         return s
 
     def randomize_solution(self, grid):
@@ -131,7 +164,7 @@ if __name__ == '__main__':
     list_of_vertex = []
     for i in range(g.nb_vertex):
         list_of_vertex.append(g[i])
-    sol = Solution(list_of_vertex)
+    sol = Solution(g)
     print(sol)
     print(sol.cost())
     sol2 = sol.disturb(g)
