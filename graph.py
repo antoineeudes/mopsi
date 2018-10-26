@@ -41,8 +41,11 @@ class Graph:
             y = random.random()*height
             self._vertex.append(Vertex(x, y))
 
+<<<<<<< HEAD
         # self._is_cost_actualized = False
 
+=======
+>>>>>>> 5ce54df1e459964ce7515c2cf2a193ca77e12630
         # self.relative_dist = []
         #
         # for i in range(nb_vertex):
@@ -112,8 +115,8 @@ class Solution:
 
         if(key == self.len):
             return self.vertex[self._path_index[0]]
-        if(key == -1):
-            return self.vertex[self._path_index[-1]]
+        # if(key == -1):
+        #     return self.vertex[self._path_index[-1]]
         return self.vertex[self._path_index[key]]
 
     def __setitem__(self, key, val):
@@ -153,15 +156,17 @@ class Solution:
         # self[i], self[j] = self[j], self[i]
 
     def reverse(self, i, j):
-        if i>self.len or j>self.len or i<-1 or j<-1:
+        if i>=self.len or j>=self.len or i<0 or j<0:
             raise IndexError("Indice en dehors des bornes")
 
         i, j = min(i,j), max(i,j)
         if j-i > self.len-(j-i):
             i, j = j+1, i+self.len-1
+            # print("fait le tour")
 
-        i, j = i%self.len, j%self.len
-        new_cost = self._current_cost-self[i].dist(self[i-1])-self[j].dist(self[j+1])+self[i-1].dist(self[j])+self[j+1].dist(self[i])
+        i0, j0 = i%self.len, j%self.len
+        new_cost = self._current_cost-self[i0].dist(self[i0-1])-self[j0].dist(self[j0+1])+self[i0-1].dist(self[j0])+self[j0+1].dist(self[i0])
+
         for k in range((j+1-i)//2):
             i1, i2 = (i+k)%self.len, (j-k)%self.len
             self._path_index[i1], self._path_index[i2] = self._path_index[i2], self._path_index[i1]
@@ -177,17 +182,17 @@ class Solution:
 
     def cost(self):
 
-
         if self._is_cost_actualized:
             # print("{} {}".format(s, self._current_cost))
             return self._current_cost
 
+        print("calcul complet")
+        # raise IndexError("chibre")
 
         s = 0
         for i in range(len(self.vertex)):
             s += self[i].dist(self[i+1])
-
-
+            
         self._current_cost = s
         self._is_cost_actualized = True
         return s
