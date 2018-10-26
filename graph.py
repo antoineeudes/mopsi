@@ -41,7 +41,7 @@ class Graph:
             y = random.random()*height
             self._vertex.append(Vertex(x, y))
 
-        self._is_cost_actualized = False
+        # self._is_cost_actualized = False
 
         # self.relative_dist = []
         #
@@ -126,7 +126,7 @@ class Solution:
         return string
 
     def __copy__(self):
-        
+
         return Solution(self.graph, self._path_index[:], self._current_cost if self._is_cost_actualized else None)
 
     def get_most_distant_vertices_id(self):
