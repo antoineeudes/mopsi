@@ -41,11 +41,6 @@ class Graph:
             y = random.random()*height
             self._vertex.append(Vertex(x, y))
 
-<<<<<<< HEAD
-        # self._is_cost_actualized = False
-
-=======
->>>>>>> 5ce54df1e459964ce7515c2cf2a193ca77e12630
         # self.relative_dist = []
         #
         # for i in range(nb_vertex):
@@ -192,7 +187,7 @@ class Solution:
         s = 0
         for i in range(len(self.vertex)):
             s += self[i].dist(self[i+1])
-            
+
         self._current_cost = s
         self._is_cost_actualized = True
         return s
