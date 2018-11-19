@@ -197,6 +197,7 @@ class Solution:
             Dist.append(self.dist(i,i+1))
         return Dist
 
+
     def cost(self):
 
         if self._is_cost_actualized:
