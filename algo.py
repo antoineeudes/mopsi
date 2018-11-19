@@ -5,6 +5,7 @@ from math import exp
 from math import log
 from matplotlib import pyplot as plt
 import copy
+import time
 
 def indice_min(liste):
     mini = float('inf')
@@ -126,8 +127,8 @@ class SimulatedAnnealing:
         return self.min_solution
 
 if __name__ == '__main__':
-    g = graph.Graph(500)
-    S = SimulatedAnnealing(0.99, 1500, g, disturb_reverse)
+    g = graph.Graph(100)
+    S = SimulatedAnnealing(0.5, 100, g, disturb_reverse)
     min_solution = S.compute()
 
     X = []
@@ -139,7 +140,9 @@ if __name__ == '__main__':
     plt.plot(X, Y)
     g.display()
 
-    for i in range(500000):
+    time0 = time.time()
+
+    for i in range(1000):
         solution = S.compute()
         print("{} {}".format(min_solution.cost(), i))
         if(solution.cost() < min_solution.cost()):
@@ -150,6 +153,7 @@ if __name__ == '__main__':
 
     print("Cout final réel : {}".format(graph.real_cost(min_solution)))
     print("Calculs de distances : {}".format(graph.nb_dist))
+    print("Temps : {}".format(time.time()-time0))
     for vertex in min_solution:
         X.append(vertex.x)
         Y.append(vertex.y)

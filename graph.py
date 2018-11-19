@@ -175,8 +175,10 @@ class Solution:
         self._is_cost_actualized = True
 
     def swap(self, i, j):
-        self._is_cost_actualized = False
+        # self._is_cost_actualized = False
+        new_cost = self._current_cost - self.dist(i, i-1) - self.dist(j, j-1) - self.dist(j, j+1) - self.dist(i, i+1) + self.dist(i-1,j) + self.dist(j, i+1) + self.dist(j-1, i) + self.dist(i, j+1)
         self._path_index[i], self._path_index[j] = self._path_index[j], self._path_index[i]
+        self.set_cost(new_cost)
         # self[i], self[j] = self[j], self[i]
 
     def reverse(self, i, j):
