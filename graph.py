@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from math import sqrt
 from math import exp
+import copy
 
 nb_dist = 0
 
@@ -221,6 +222,16 @@ class Solution:
         self._current_cost = s
         self._is_cost_actualized = True
         return s
+
+    def disturb(self):
+        return self.disturb_reverse()
+
+    def disturb_reverse(self):
+        s2 = copy.copy(self)
+        id1 = random.randint(0, self.len-1)
+        id2 = random.randint(0, self.len-1)
+        s2.reverse(id1, id2)
+        return s2
 
     def randomize_solution(self, grid):
         for i in range(grid.nb_vertex):
