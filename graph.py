@@ -3,8 +3,16 @@ from matplotlib import pyplot as plt
 import numpy as np
 from math import sqrt
 from math import exp
+import copy
 
 nb_dist = 0
+
+
+def real_cost(sol):
+    s = 0
+    for i in range(sol.len):
+        s += sol.dist(i,i+1)
+    return s
 
 class Vertex:
     def __init__(self, x, y):
@@ -168,8 +176,10 @@ class Solution:
         self._is_cost_actualized = True
 
     def swap(self, i, j):
-        self._is_cost_actualized = False
+        # self._is_cost_actualized = False
+        new_cost = self._current_cost - self.dist(i, i-1) - self.dist(j, j-1) - self.dist(j, j+1) - self.dist(i, i+1) + self.dist(i-1,j) + self.dist(j, i+1) + self.dist(j-1, i) + self.dist(i, j+1)
         self._path_index[i], self._path_index[j] = self._path_index[j], self._path_index[i]
+        self.set_cost(new_cost)
         # self[i], self[j] = self[j], self[i]
 
     def reverse(self, i, j):
@@ -177,17 +187,17 @@ class Solution:
             raise IndexError("Indice en dehors des bornes")
 
         i, j = min(i,j), max(i,j)
+        if i == 0 and j == self.len-1:
+            return None # Formule du cout non valide dans ce cas la
         if j-i > self.len-(j-i):
             i, j = j+1, i+self.len-1
-            # print("fait le tour")
 
         i0, j0 = i%self.len, j%self.len
-        new_cost = self._current_cost-self.dist(i0,i0-1)-self.dist(j0,j0+1)+self.dist(i0-1,j0)+self.dist(j0+1,i0)
+        new_cost = self._current_cost-(self.dist(i0,i0-1)+self.dist(j0,j0+1)-self.dist(i0-1,j0)-self.dist(j0+1,i0))
 
         for k in range((j+1-i)//2):
             i1, i2 = (i+k)%self.len, (j-k)%self.len
             self._path_index[i1], self._path_index[i2] = self._path_index[i2], self._path_index[i1]
-
 
         self.set_cost(new_cost)
 
@@ -201,11 +211,10 @@ class Solution:
     def cost(self):
 
         if self._is_cost_actualized:
-            # print("{} {}".format(s, self._current_cost))
+            # print("{}".format(real_cost(self)-self._current_cost))
             return self._current_cost
 
         print("calcul complet")
-        # raise IndexError("chibre")
 
         s = 0
         for i in range(len(self.vertex)):
@@ -214,6 +223,16 @@ class Solution:
         self._current_cost = s
         self._is_cost_actualized = True
         return s
+
+    def disturb(self):
+        return self.disturb_reverse()
+
+    def disturb_reverse(self):
+        s2 = copy.copy(self)
+        id1 = random.randint(0, self.len-1)
+        id2 = random.randint(0, self.len-1)
+        s2.reverse(id1, id2)
+        return s2
 
     def randomize_solution(self, grid):
         for i in range(grid.nb_vertex):
