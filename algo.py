@@ -164,21 +164,22 @@ class SimulatedAnnealing_exp(SimulatedAnnealing):
     def __init__(self, s0, T=0.1, alpha=0.9999):
         super().__init__(s0, T)
         self.alpha = alpha
-        self.precedent_solution = self.min_solution
+        self.previous_solution = self.min_solution
         self.nb_stab_iterations = 0
 
     def reduce_temperature(self, T):
         return self.alpha*T
 
     def stopping_condition(self):
-        if self.precedent_solution == self.min_solution:
+        if self.previous_solution == self.min_solution:
             self.nb_stab_iterations += 1
             # print("stable {}".format(self.nb_stab_iterations))
         else:
             self.nb_stab_iterations = 0
-        self.precedent_solution = self.min_solution
+        self.previous_solution = self.min_solution
 
         if self.nb_stab_iterations >= 100000 or self.T == 0:
+            self.nb_stab_iterations = 0
             print("\n Stopped because stable \n")
             return True
         return False
@@ -188,7 +189,7 @@ class SimulatedAnnealing_log(SimulatedAnnealing):
         super().__init__(s0, T)
         self.i = 1
         self.T0 = T #Température initiale
-        self.precedent_solution = self.min_solution
+        self.previous_solution = self.min_solution
         self.nb_stab_iterations = 0
         self.C = self.T0
         if C!=None:
@@ -199,15 +200,16 @@ class SimulatedAnnealing_log(SimulatedAnnealing):
         return self.C/log(self.i)
 
     def stopping_condition(self):
-        if self.precedent_solution == self.min_solution:
+        if self.previous_solution == self.min_solution:
             self.nb_stab_iterations += 1
         else:
             self.nb_stab_iterations = 0
 
-        self.precedent_solution = self.min_solution
+        self.previous_solution = self.min_solution
 
         if self.nb_stab_iterations >= 100000:
             print("\n Stopped because stable \n")
+            self.nb_stab_iterations = 0
             return True
         return False
 
@@ -215,6 +217,7 @@ class SimulatedAnnealing_log(SimulatedAnnealing):
 class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
     def __init__(self, s0, T, alpha, nb):
         self.nb_annealing = nb
+        self.T0 = T
         super().__init__(s0, T, alpha)
 
     def stopping_condition(self):
@@ -223,12 +226,12 @@ class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
     def compute(self, show=True):
         min_solution = self.min_solution
         for i in range(self.nb_annealing):
-            solution = super().compute(min_solution, show=True)
+            solution = super().compute(min_solution, show=False)
+            self.T = self.T0 # On repart de la température initiale (pas fait automatiquement)
             if(solution.cost() < min_solution.cost()):
                 min_solution = solution
-            # if(show):
-            #     print("{} {}".format(min_solution.cost(), i))
-            print(i)
+            if(show):
+                print("{} {}".format(min_solution.cost(), i))
 
         return min_solution
 
@@ -238,8 +241,8 @@ if __name__ == '__main__':
     min_solution = Solution(g)
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
     # S = SimulatedAnnealing_exp(min_solution)
-    S = SimulatedAnnealing_log(min_solution)
-    # S = SimulatedAnnealing_repeated(min_solution, 100, 0.9, 10000)
+    # S = SimulatedAnnealing_log(min_solution)
+    S = SimulatedAnnealing_repeated(min_solution, 100, 0.9, 10000)
 
     X, Y = [], []
     print(graph.nb_dist)
