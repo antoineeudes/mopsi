@@ -3,7 +3,8 @@ from algo import SimulatedAnnealing, SimulatedAnnealing_log, Solution
 from matplotlib import pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-from pylab import *
+from pylab import figure, array, append, show
+from config import PATH_EMPIRICAL_SEARCH
 
 
 class ParameterTestings:
@@ -16,8 +17,8 @@ class ParameterTestings:
         self._C_sup = C_sup
 
     def compute(self):
-        fichier = open('./data/parameters/empirical_search.txt', 'w')
-        graph = Graph(100)
+        fichier = open(PATH_EMPIRICAL_SEARCH, 'w')
+        graph = Graph()
         graph.get_reference()
         first_solution = Solution(graph)
         for T in np.linspace(self._T_inf, self._T_sup, self._nb_iterT):
@@ -38,7 +39,7 @@ class ParameterTestings:
         Temperatures = array([])
         coefs_C = array([])
         Costs = array([])
-        fichier = open('./data/parameters/empirical_search.txt', 'r')
+        fichier = open(PATH_EMPIRICAL_SEARCH, 'r')
         for line in fichier:
             M = []
             J = line.strip().split('\t')
@@ -55,7 +56,7 @@ class ParameterTestings:
         show()
 
 if __name__=='__main__':
-    Test = ParameterTestings(10, 10, 0.01, 1, 1, 10)
+    Test = ParameterTestings(50, 50, 0.01, 1, 0.01, 1)
     # Test.compute()
     Test.plot3D()
 
