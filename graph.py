@@ -96,7 +96,7 @@ class Graph:
         else:
             return 0
 
-    def display(self):
+    def display(self, save=True):
         X = np.zeros(self.nb_vertex)
         Y = np.zeros(self.nb_vertex)
 
@@ -104,11 +104,30 @@ class Graph:
             X[id] = self[id].x
             Y[id] = self[id].y
         plt.scatter(X, Y)
+        if save==True:
+            plt.savefig("./data/graph/reference.png")
         plt.show()
 
     def get_nearest_vertex(id_vertex):
         pass
 
+    def get_reference(self):
+
+        """ updates the graph with the values of the testing graph"""
+
+        file = open("./data/graph/reference.txt", "r")
+        Vertices = []
+        for line in file:
+            AuxList = []
+            Coordinates = line.strip().split('\t')
+            for coordinate in Coordinates:
+                AuxList.append(float(coordinate))
+            Vertices.append(copy.deepcopy(AuxList))
+        file.close()
+        assert len(Vertices) == len(self._vertex), "size of data set is not equal to the size of the graph"
+        for i in range(self.nb_vertex):
+            vertex = Vertices[i]
+            self._vertex[i] = Vertex(vertex[0], vertex[1])
 
 
 class Solution:

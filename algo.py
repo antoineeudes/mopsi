@@ -138,7 +138,7 @@ class SimulatedAnnealing:
     def stopping_condition(self):
         return self.T <= 10
 
-    def compute(self, start_solution = None, show=True):
+    def compute(self, start_solution=None, show=True):
 
         if(start_solution != None):
             self.min_solution = start_solution
@@ -159,6 +159,8 @@ class SimulatedAnnealing:
             self.T = self.reduce_temperature(self.T)
 
         return self.min_solution
+
+
 
 class SimulatedAnnealing_exp(SimulatedAnnealing):
     def __init__(self, s0, T=0.1, alpha=0.9999):
@@ -206,7 +208,7 @@ class SimulatedAnnealing_log(SimulatedAnnealing):
 
         self.precedent_solution = self.min_solution
 
-        if self.nb_stab_iterations >= 100000:
+        if self.nb_stab_iterations >= 10000:
             print("\n Stopped because stable \n")
             return True
         return False
@@ -235,16 +237,11 @@ class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
 
 if __name__ == '__main__':
     g = graph.Graph(100)
-<<<<<<< HEAD
-    S = SimulatedAnnealing(0.9, 1500, g, disturb_reverse)
-    min_solution = S.compute()
-=======
     min_solution = Solution(g)
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
     # S = SimulatedAnnealing_exp(min_solution)
     S = SimulatedAnnealing_log(min_solution)
     # S = SimulatedAnnealing_repeated(min_solution, 100, 0.9, 10000)
->>>>>>> 2eec09640fcd3f7e18e71406b75dcab82671ee47
 
     X, Y = [], []
     print(graph.nb_dist)
@@ -254,19 +251,11 @@ if __name__ == '__main__':
     plt.plot(X, Y)
     g.display()
 
-<<<<<<< HEAD
-    for i in range(500000):
-        solution = S.compute()
-        print(min_solution.cost())
-        if(solution.cost() < min_solution.cost()):
-            min_solution = solution
-=======
     time0 = time.time()
->>>>>>> 2eec09640fcd3f7e18e71406b75dcab82671ee47
 
     min_solution = S.compute()
 
-    print("Cout final réel : {}".format(graph.real_cost(min_solution)))
+    print("Cout final reel : {}".format(graph.real_cost(min_solution)))
     print("Calculs de distances : {}".format(graph.nb_dist))
     print("Temps : {}".format(time.time()-time0))
 
