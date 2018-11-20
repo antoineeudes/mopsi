@@ -4,6 +4,7 @@ import numpy as np
 from math import sqrt
 from math import exp
 import copy
+from config import PATH_REFERENCE_GRAPH, PATH_REFERENCE_GRAPH_FIGURE
 
 nb_dist = 0
 
@@ -38,23 +39,26 @@ class Vertex:
         return sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
 
 class Graph:
-    def __init__(self, nb_vertex, width=1, height=1):
-        self._nb_vertex = nb_vertex
+    def __init__(self, width=1, height=1):
+        # self._nb_vertex = nb_vertex
         self._width = width
         self._height = height
+        self._dist = dict()
         self._vertex = list()
-
-        for id in range(nb_vertex):
-            x = random.random()*width
-            y = random.random()*height
-            self._vertex.append(Vertex(x, y))
-
+        self._nb_vertex = 0
         self._distances = dict()
 
-        for i in range(nb_vertex):
-            for j in range(i):
-                self._distances[i, j] = self._vertex[i].dist(self._vertex[j])
-
+        # for id in range(nb_vertex):
+        #     x = random.random()*width
+        #     y = random.random()*height
+        #     self._vertex.append(Vertex(x, y))
+        #
+        # self._distances = dict()
+        #
+        # for i in range(nb_vertex):
+        #     for j in range(i):
+        #         self._distances[i, j] = self._vertex[i].dist(self._vertex[j])
+        #
         # for j in range(nb_vertex):
         #     self._distances[nb_vertex, j] = self._vertex[0].dist(self._vertex[j])
 
@@ -88,6 +92,15 @@ class Graph:
         # else:
         #     raise ValueError("vertex does not exist")
 
+    def update_distance_dict(self):
+        for i in range(self.nb_vertex):
+            for j in range(i):
+                self._distances[i, j] = self._vertex[i].dist(self._vertex[j])
+
+        for j in range(self.nb_vertex):
+            self._distances[self.nb_vertex, j] = self._vertex[0].dist(self._vertex[j])
+
+
     def dist(self, i, j):
         if i > j:
             return self._distances[i,j]
@@ -96,7 +109,18 @@ class Graph:
         else:
             return 0
 
-    def display(self):
+    def randomize(self, nb_vertex):
+        self._nb_vertex = nb_vertex
+        for id in range(nb_vertex):
+            x = random.random()*self.width
+            y = random.random()*self.height
+            self._vertex.append(Vertex(x, y))
+        self.update_distance_dict()
+
+
+
+
+    def display(self, save=True):
         X = np.zeros(self.nb_vertex)
         Y = np.zeros(self.nb_vertex)
 
@@ -104,12 +128,31 @@ class Graph:
             X[id] = self[id].x
             Y[id] = self[id].y
         plt.scatter(X, Y)
+        if save==True:
+            plt.savefig(PATH_REFERENCE_GRAPH_FIGURE)
         plt.show()
 
     def get_nearest_vertex(id_vertex):
         pass
 
+    def get_reference(self):
 
+        """ updates the graph with the values of the testing graph"""
+
+        file = open(PATH_REFERENCE_GRAPH, "r")
+        Vertices = []
+        for line in file:
+            AuxList = []
+            Coordinates = line.strip().split('\t')
+            for coordinate in Coordinates:
+                AuxList.append(float(coordinate))
+            Vertices.append(copy.deepcopy(AuxList))
+        file.close()
+        self._nb_vertex = len(Vertices)
+        for i in range(self.nb_vertex):
+            vertex = Vertices[i]
+            self._vertex.append(Vertex(vertex[0], vertex[1]))
+        self.update_distance_dict()
 
 class Solution:
     def __init__(self, graph, path_index = None, cost = None):
@@ -207,6 +250,7 @@ class Solution:
             Dist.append(self.dist(i,i+1))
         return Dist
 
+
     def cost(self):
 
         if self._is_cost_actualized:
@@ -239,7 +283,8 @@ class Solution:
 
 
 if __name__ == '__main__':
-    g = Graph(1000)
+    g = Graph()
+    g.randomize(1000)
     V = Vertex(2, 4)
     print(V)
     #g.display()
@@ -249,9 +294,9 @@ if __name__ == '__main__':
     sol = Solution(g)
     print(sol)
     print(sol.cost())
-    sol2 = sol.disturb(g)
+    sol2 = sol.disturb()
     print(sol2.cost())
-    sol3 = sol2.disturb(g)
+    sol3 = sol2.disturb()
     print(sol3.cost())
-    sol4 = sol3.disturb(g)
+    sol4 = sol3.disturb()
     print(sol4.cost())

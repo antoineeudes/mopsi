@@ -138,7 +138,7 @@ class SimulatedAnnealing:
     def stopping_condition(self):
         return self.T <= 10
 
-    def compute(self, start_solution = None, show=True):
+    def compute(self, start_solution=None, show=True):
 
         if(start_solution != None):
             self.min_solution = start_solution
@@ -159,6 +159,8 @@ class SimulatedAnnealing:
             self.T = self.reduce_temperature(self.T)
 
         return self.min_solution
+
+
 
 class SimulatedAnnealing_exp(SimulatedAnnealing):
     def __init__(self, s0, T=0.1, alpha=0.9999):
@@ -207,7 +209,7 @@ class SimulatedAnnealing_log(SimulatedAnnealing):
 
         self.previous_solution = self.min_solution
 
-        if self.nb_stab_iterations >= 100000:
+        if self.nb_stab_iterations >= 10000:
             print("\n Stopped because stable \n")
             self.nb_stab_iterations = 0
             return True
@@ -237,7 +239,8 @@ class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
 
 
 if __name__ == '__main__':
-    g = graph.Graph(100)
+    g = graph.Graph()
+    g.randomize(100)
     min_solution = Solution(g)
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
     # S = SimulatedAnnealing_exp(min_solution)
@@ -256,7 +259,7 @@ if __name__ == '__main__':
 
     min_solution = S.compute()
 
-    print("Cout final réel : {}".format(graph.real_cost(min_solution)))
+    print("Cout final reel : {}".format(graph.real_cost(min_solution)))
     print("Calculs de distances : {}".format(graph.nb_dist))
     print("Temps : {}".format(time.time()-time0))
 
