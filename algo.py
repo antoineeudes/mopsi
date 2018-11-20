@@ -189,7 +189,7 @@ class SimulatedAnnealing_exp(SimulatedAnnealing):
             self.nb_stab_iterations = 0
         self.previous_solution = self.min_solution
 
-        if self.nb_stab_iterations >= 100000 or self.T == 0:
+        if self.nb_stab_iterations >= 10000 or self.T == 0:
             self.nb_stab_iterations = 0
             print("\n Stopped because stable \n")
             return True
