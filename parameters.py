@@ -100,13 +100,13 @@ class ParameterTestings:
         fichier.close()
         ax.scatter(Temperatures, coefs_C, zs=Costs, zdir='z', s=20.)
         ax.set_xlabel('TEMPERATURE DE DEPART')
-        ax.set_ylabel('COEFFICIENT C')
+        ax.set_ylabel('COEFFICIENT ALPHA')
         ax.set_zlabel('COUTS')
         show()
 
 if __name__=='__main__':
     Test = ParameterTestings(50, 50, 0.01, 1, 0.7, 0.95)
-    Test.compute()
+    # Test.compute()
     Test.plot3D()
 
 
