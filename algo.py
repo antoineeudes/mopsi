@@ -131,12 +131,19 @@ class SimulatedAnnealing:
     def __init__(self, s0, T):
         self.T = T
         self.min_solution = s0
+        self.start_time = None
 
     def reduce_temperature(self, T):
         return T
 
     def stopping_condition(self):
         return self.T <= 10
+
+    def timeout(self):
+        if time.time()-self.start_time > 60:
+            print("\n Stopped because timeout \n")
+            return True
+        return False
 
     def compute(self, start_solution=None, show=True):
 
@@ -145,7 +152,9 @@ class SimulatedAnnealing:
 
         current_solution = self.min_solution
 
-        while not self.stopping_condition():
+        self.start_time = time.time()
+
+        while not self.stopping_condition() and not self.timeout():
             new_solution = current_solution.disturb()
             p = random.random()
 
@@ -188,9 +197,9 @@ class SimulatedAnnealing_exp(SimulatedAnnealing):
 
 class SimulatedAnnealing_log(SimulatedAnnealing):
     def __init__(self, s0, T=0.1, C=None):
-        super().__init__(s0, T)
-        self.i = 1
         self.T0 = T #Température initiale
+        super().__init__(s0, T0)
+        self.i = 1
         self.previous_solution = self.min_solution
         self.nb_stab_iterations = 0
         self.C = self.T0
@@ -242,10 +251,11 @@ if __name__ == '__main__':
     g = graph.Graph()
     g.randomize(100)
     min_solution = Solution(g)
+    
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
     # S = SimulatedAnnealing_exp(min_solution)
-    # S = SimulatedAnnealing_log(min_solution)
-    S = SimulatedAnnealing_repeated(min_solution, 100, 0.9, 10000)
+    S = SimulatedAnnealing_log(min_solution)
+    # S = SimulatedAnnealing_repeated(min_solution, 100, 0.9, 10000)
 
     X, Y = [], []
     print(graph.nb_dist)
