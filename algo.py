@@ -198,7 +198,7 @@ class SimulatedAnnealing_exp(SimulatedAnnealing):
 class SimulatedAnnealing_log(SimulatedAnnealing):
     def __init__(self, s0, T=0.1, C=None):
         self.T0 = T #Température initiale
-        super().__init__(s0, T0)
+        super().__init__(s0, T)
         self.i = 1
         self.previous_solution = self.min_solution
         self.nb_stab_iterations = 0

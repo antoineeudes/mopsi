@@ -4,7 +4,7 @@ import numpy as np
 from math import sqrt
 from math import exp
 import copy
-from config import PATH_REFERENCE_GRAPH, PATH_REFERENCE_GRAPH_FIGURE
+from config import PATH_REFERENCE_GRAPH, PATH_REFERENCE_GRAPH_FIGURE, PATH_LAW_SALESMAN
 
 nb_dist = 0
 
@@ -278,6 +278,11 @@ class Solution:
     def randomize_solution(self, grid):
         for i in range(grid.nb_vertex):
             self[i] = grid[i]
+
+    def write(self):
+        fichier = open(PATH_LAW_SALESMAN, "a")
+        fichier.write(str(len(self.vertex)) + "\t" + str(self.cost()) + "\n")
+        fichier.close()
 
 
 if __name__ == '__main__':
