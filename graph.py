@@ -118,8 +118,6 @@ class Graph:
         self.update_distance_dict()
 
 
-
-
     def display(self, save=True):
         X = np.zeros(self.nb_vertex)
         Y = np.zeros(self.nb_vertex)
