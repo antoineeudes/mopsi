@@ -154,7 +154,7 @@ class SimulatedAnnealing:
 
         self.start_time = time.time()
 
-        while not self.stopping_condition() and not self.timeout():
+        while not self.stopping_condition():
             new_solution = current_solution.disturb()
             p = random.random()
 
@@ -251,7 +251,7 @@ if __name__ == '__main__':
     g = graph.Graph()
     g.randomize(100)
     min_solution = Solution(g)
-    
+
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
     # S = SimulatedAnnealing_exp(min_solution)
     S = SimulatedAnnealing_log(min_solution)
