@@ -1,10 +1,30 @@
 from algo import *
 from config import PATH_LAW_SALESMAN
+from copy import deepcopy
+from matplotlib import pyplot as plt
 
+
+def savePlot(path):
+    fichier = open(path, 'r')
+    X = []
+    Y = []
+    for line in fichier:
+        M = deepcopy(line.strip().split('\t'))
+        X.append(float(M[0]))
+        Y.append(float(M[1]))
+
+    fichier.close()
+    plt.plot(X, Y)
+    plt.grid()
+    plt.savefig(path+".png")
+    plt.show()
+
+        # string = line.strip().split('\t')
 
 if __name__ == "__main__":
 
-    for i in range(10, 500, 2):
+    # savePlot("./data/solution/law.txt")
+    for i in range(10, 2000, 2):
         g = graph.Graph()
         g.randomize(i)
         min_solution = Solution(g)
