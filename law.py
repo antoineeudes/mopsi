@@ -19,6 +19,9 @@ def savePlot(path):
     plt.savefig(path+".png")
     plt.show()
 
+
+def MeanLaw(path):
+    return
         # string = line.strip().split('\t')
 
 if __name__ == "__main__":
