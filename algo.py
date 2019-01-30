@@ -249,7 +249,7 @@ class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
 
 if __name__ == '__main__':
     g = graph.Graph()
-    g.randomize(100)
+    g.randomize(50)
     min_solution = Solution(g)
 
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)
