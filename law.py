@@ -20,11 +20,13 @@ def savePlot(path):
     plt.show()
 
 
-def MeanLaw(path="./data/solution/lawmean.txt", nb_iter=100, nb_acquisition=100):
+def MeanLaw(path="./data/solution/lawmean.txt", nb_iter=30, nb_acquisition=100):
     fichier = open(path, 'w')
     for i in range(5, nb_acquisition+5):
+        print("acquisition", i)
         s = 0.
         for j in range(nb_iter):
+            print("iter", j)
 
             g = graph.Graph()
             g.randomize(i)
@@ -33,15 +35,12 @@ def MeanLaw(path="./data/solution/lawmean.txt", nb_iter=100, nb_acquisition=100)
 
             S = SimulatedAnnealing_log(min_solution)
 
-            time0 = time.time()
-
             min_solution = S.compute(show=False)
 
-            # print("Cout final reel : {}".format(graph.real_cost(min_solution)))
-            # print("Calculs de distances : {}".format(graph.nb_dist))
-            # print("Temps : {}".format(time.time()-time0))
-
             s += min_solution.cost()
+        del g
+        del S
+        del min_solution
         s = s/nb_iter
         line = str(i) + "\t" + str(s) + "\n"
         fichier.write(line)
