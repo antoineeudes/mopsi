@@ -154,7 +154,7 @@ class SimulatedAnnealing:
 
         self.start_time = time.time()
 
-        while not self.stopping_condition():
+        while not self.stopping_condition() and not self.timeout():
             new_solution = current_solution.disturb()
             p = random.random()
 
