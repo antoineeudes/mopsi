@@ -20,7 +20,7 @@ def savePlot(path):
     plt.show()
 
 
-def MeanLaw(path="./data/solution/lawmean1.txt", nb_iter=30, nb_acquisition=100):
+def MeanLaw(path="./data/solution/lawmean1.txt", nb_iter=40, nb_acquisition=200):
     fichier = open(path, 'w')
     for i in range(5, nb_acquisition+5):
         print("acquisition", i)
