@@ -142,7 +142,7 @@ class SimulatedAnnealing:
     def timeout(self):
         if time.time()-self.start_time > 300:
             print("\n Stopped because timeout \n")
-            return False
+            return True
         return False
 
     def compute(self, start_solution=None, show=True):
@@ -154,7 +154,7 @@ class SimulatedAnnealing:
 
         self.start_time = time.time()
 
-        while not self.stopping_condition():
+        while not self.stopping_condition() and not self.timeout():
             new_solution = current_solution.disturb()
             p = random.random()
 

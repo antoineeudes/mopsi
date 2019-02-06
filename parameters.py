@@ -106,7 +106,7 @@ class ParameterTestings:
 
 if __name__=='__main__':
     Test = ParameterTestings(50, 50, 0.01, 1, 0.7, 0.95)
-    # Test.compute()
+    #Test.compute()
     Test.plot3D()
 
 
