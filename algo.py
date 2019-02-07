@@ -1,7 +1,7 @@
 import graph
 import random
 from graph import Solution
-from math import exp
+from math import exp, sin, pi
 from math import log
 from matplotlib import pyplot as plt
 import copy
@@ -145,6 +145,13 @@ class SimulatedAnnealing:
             return True
         return False
 
+    def test_time_cicle_timeout(self):
+        nb_vertex = len(self.min_solution.vertex)
+        if abs(self.min_solution.cost()-2*nb_vertex*sin(pi/nb_vertex))>0.001:# print(self.min_solution.cost()-2*nb_vertex*sin(pi/nb_vertex))
+            return False
+        return True
+
+
     def compute(self, start_solution=None, show=True):
 
         if(start_solution != None):
@@ -154,7 +161,9 @@ class SimulatedAnnealing:
 
         self.start_time = time.time()
 
-        while not self.stopping_condition() and not self.timeout():
+        while not self.test_time_cicle_timeout():
+        # while not self.stopping_condition() and not self.timeout():
+
             new_solution = current_solution.disturb()
             p = random.random()
 
@@ -260,7 +269,9 @@ class SimulatedAnnealing_repeated(SimulatedAnnealing_exp):
     def compute(self, show=True):
         min_solution = self.min_solution
         i = 0
-        while not self.extra_stopping_condition():
+        # while not self.extra_stopping_condition():
+        while not self.test_time_cicle_timeout():
+
             i += 1
             self.nb_iteration = 0
             solution = super().compute(min_solution, show=False)
@@ -327,7 +338,7 @@ class SimulatedAnnealing_step(SimulatedAnnealing):
 
 if __name__ == '__main__':
     g = graph.Graph()
-    g.randomize(100)
+    g.circlize(50)
     min_solution = Solution(g)
 
     # S = SimulatedAnnealing_exp(min_solution, 0.1, 0.99999)

@@ -24,12 +24,12 @@ if __name__ == '__main__':
     X_step_mean = []
     Y_step_mean = []
 
-    for n in range(10, 251, 10):
+    for n in range(10, 150, 10):
         # X.append(n)
 
-        for nb_graph in range(1, 10):
+        for nb_graph in range(1, 40):
             g = graph.Graph()
-            g.randomize(n)
+            g.circlize(n)
             start_solution = Solution(g)
 
             #Décroissance log

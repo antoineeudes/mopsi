@@ -2,9 +2,10 @@ import random
 from matplotlib import pyplot as plt
 import numpy as np
 from math import sqrt
-from math import exp
+from math import exp, pi
 import copy
 from config import PATH_REFERENCE_GRAPH, PATH_REFERENCE_GRAPH_FIGURE, PATH_LAW_SALESMAN
+import cmath
 
 nb_dist = 0
 
@@ -117,6 +118,21 @@ class Graph:
             self._vertex.append(Vertex(x, y))
         self.update_distance_dict()
 
+    def circlize(self, nb_vertex):
+        self._nb_vertex = nb_vertex
+        X = []
+        Y = []
+        for id in range(nb_vertex):
+            z = cmath.exp(2*1j*pi*id/nb_vertex)
+            x = z.real + 0.5
+            y = z.imag + 0.5
+            self._vertex.append(Vertex(x, y))
+        for _ in range(100):
+            i = random.randint(0, len(self._vertex)-1)
+            j = random.randint(0, len(self._vertex)-1)
+            self._vertex[i], self._vertex[j] = self._vertex[j], self._vertex[i]
+
+        self.update_distance_dict()
 
     def display(self, save=True):
         X = np.zeros(self.nb_vertex)
